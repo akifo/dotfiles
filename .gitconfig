@@ -23,14 +23,15 @@
 [ghq]
 	root = /Users/akiho/github
 [alias]
+  l = log --date=format:'%Y-%m-%d %H:%M' --pretty=format:'%C(yellow)%h %Cgreen%cd %Cblue%cn %Creset%s'
 	# branch local
 	bl = !git for-each-ref --sort=-authordate --format='%(authordate:short) %(refname)' refs/heads | sed 's/refs\\/heads\\///'
 	# branch remote
 	br = !git for-each-ref --sort=-authordate --format='%(authordate:short) %(refname)' refs/remotes | sed 's/refs\\/remotes\\///' | grep -v 'origin/HEAD'
 	# switch local branch
-	swl = !git bl | fzf --no-sort | awk '{ print $NF }' | xargs git sw
+	swl = !git bl | fzf --no-sort --preview 'git l -n 10' | awk '{ print $NF }' | xargs git switch
 	# switch remote branch
-	swr = !git fetch --prune && git br | fzf --no-sort | awk '{ print $NF }' | xargs -I{} sh -c 'git cot {} || echo {} | sed -e "s%[^/]*/%%" | xargs git sw'
+	swr = !git fetch --prune && git br | fzf --no-sort | awk '{ print $NF }' | xargs -I{} sh -c 'git cot {} || echo {} | sed -e "s%[^/]*/%%" | xargs git switch'
 	# delete local branch
 	dlb = !git bl | fzf --header '[delete local branch]' | awk '{ print $NF }' | xargs git branch -D
 	# delete remote branch
