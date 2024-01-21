@@ -1,0 +1,37 @@
+[include]
+  path = ~/.gitconfig.local
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[core]
+	excludesfile = /Users/akiho/.gitignore_global
+	editor = vim
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path =
+[mergetool "sourcetree"]
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[push]
+	default = current
+[url "https://github.com/"]
+	insteadOf = git://github.com/
+[merge]
+	conflictStyle = diff3
+[ghq]
+	root = /Users/akiho/github
+[alias]
+	# branch local
+	bl = !git for-each-ref --sort=-authordate --format='%(authordate:short) %(refname)' refs/heads | sed 's/refs\\/heads\\///'
+	# branch remote
+	br = !git for-each-ref --sort=-authordate --format='%(authordate:short) %(refname)' refs/remotes | sed 's/refs\\/remotes\\///' | grep -v 'origin/HEAD'
+	# switch local branch
+	swl = !git bl | fzf --no-sort | awk '{ print $NF }' | xargs git sw
+	# switch remote branch
+	swr = !git fetch --prune && git br | fzf --no-sort | awk '{ print $NF }' | xargs -I{} sh -c 'git cot {} || echo {} | sed -e "s%[^/]*/%%" | xargs git sw'
+	# delete local branch
+	dlb = !git bl | fzf --header '[delete local branch]' | awk '{ print $NF }' | xargs git branch -D
+	# delete remote branch
+	drb = !git br | fzf --header '[delete reteme branch]' | awk '{ print $NF }' | sed -r 's/([^\\/]+)\\/(.+)/\\1 \\2/g' | xargs git push -d
