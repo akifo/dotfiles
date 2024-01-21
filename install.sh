@@ -1,6 +1,7 @@
 #!/bin/sh
-ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
-ln -sf ~/dotfiles/.gitconfig.local ~/.gitconfig.local
-ln -sf ~/dotfiles/.zshrc ~/.zshrc
-ln -sf ~/dotfiles/.fzf.zsh ~/.fzf.zsh
-ln -sf ~/dotfiles/.starship.toml ~/.starship.toml
+wd=$(pwd)
+ln -sf ${wd}/.gitconfig ~/.gitconfig
+ln -sf ${wd}/.gitconfig.local ~/.gitconfig.local
+ln -sf ${wd}/.zshrc ~/.zshrc
+ln -sf ${wd}/.fzf.zsh ~/.fzf.zsh
+ln -sf ${wd}/.starship.toml ~/.starship.toml
