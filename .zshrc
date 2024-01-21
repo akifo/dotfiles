@@ -45,6 +45,7 @@ export PATH="/usr/local/opt/mysql-client/bin:$PATH"
 
 # alias
 alias dc='docker-compose'
+alias g='git'
 
 # fastly
 eval "$(fastly --completion-script-zsh)"
