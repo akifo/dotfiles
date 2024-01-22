@@ -24,6 +24,7 @@
 	root = /Users/akiho/github
 [alias]
   l = log --date=format:'%Y-%m-%d %H:%M' --pretty=format:'%C(yellow)%h %Cgreen%cd %Cblue%cn %Creset%s'
+	fp = !git fetch && git pull --rebase
 	# branch local
 	bl = !git for-each-ref --sort=-authordate --format='%(authordate:short) %(refname)' refs/heads | sed 's/refs\\/heads\\///'
 	# branch remote
