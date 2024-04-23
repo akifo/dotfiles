@@ -25,6 +25,7 @@
 [alias]
   l = log --date=format:'%Y-%m-%d %H:%M' --pretty=format:'%C(yellow)%h %Cgreen%cd %Cblue%cn %Creset%s'
 	fp = !git fetch && git pull --rebase
+	swc = switch -c
 	# branch local
 	bl = !git for-each-ref --sort=-authordate --format='%(authordate:short) %(refname)' refs/heads | sed 's/refs\\/heads\\///'
 	# branch remote
@@ -32,8 +33,12 @@
 	# switch local branch
 	swl = !git bl | fzf --no-sort --preview 'git l -n 10' | awk '{ print $NF }' | xargs git switch
 	# switch remote branch
-	swr = !git fetch --prune && git br | fzf --no-sort | awk '{ print $NF }' | xargs -I{} sh -c 'git cot {} || echo {} | sed -e "s%[^/]*/%%" | xargs git switch'
+	swr = !git fetch --prune && git br | fzf --no-sort | awk '{ print $NF }' | xargs -I{} sh -c 'git checkout -t {} || echo {} | sed -e "s%[^/]*/%%" | xargs git switch'
 	# delete local branch
 	dlb = !git bl | fzf --header '[delete local branch]' | awk '{ print $NF }' | xargs git branch -D
 	# delete remote branch
 	drb = !git br | fzf --header '[delete reteme branch]' | awk '{ print $NF }' | sed -r 's/([^\\/]+)\\/(.+)/\\1 \\2/g' | xargs git push -d
+	# switch forward
+	swf = !git stash save && git switch
+	# switch back
+	swb = !git switch - && git stash pop
