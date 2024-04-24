@@ -70,3 +70,6 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 
 # zoxide
 eval "$(zoxide init zsh)"
+
+# Load aki completion
+source "/Users/akiho/.zsh/aki-completion.zsh"
