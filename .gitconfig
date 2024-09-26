@@ -25,6 +25,8 @@
 [alias]
   l = log --date=format:'%Y-%m-%d %H:%M' --pretty=format:'%C(yellow)%h %Cgreen%cd %Cblue%cn %Creset%s'
 	fp = !git fetch && git pull --rebase
+	# リモートリポジトリ上で削除されたブランチをローカルの追跡ブランチからも削除
+	ftp = fetch --prune
 	swc = switch -c
 	# branch local
 	bl = !git for-each-ref --sort=-authordate --format='%(authordate:short) %(refname)' refs/heads | sed 's/refs\\/heads\\///'
@@ -42,3 +44,12 @@
 	swf = !git stash save && git switch
 	# switch back
 	swb = !git switch - && git stash pop
+	# リモートブランチの最新の状態にローカルブランチを強制的にリセット
+  rho = !git cbn | sed 's/\\.*/origin\\/&/' | xargs git rh
+	cbn = branch --show-current # rev-parse --abbrev-ref HEAD
+	rh = reset --hard
+  # delete merged branch
+  dmb = !git branch --merged | egrep -v '\\*|master|main|dev' | xargs git branch -d
+	# remote dev を最新にしてマージ済みブランチ削除
+	# up = !git ftp && git rho && git dmb
+	up = !git ftp && git dmb
