@@ -20,6 +20,8 @@
 	insteadOf = git://github.com/
 [merge]
 	conflictStyle = diff3
+[pull]
+	rebase = true
 [ghq]
 	root = /Users/akiho/github
 [alias]
