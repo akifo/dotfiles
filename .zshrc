@@ -73,3 +73,30 @@ eval "$(zoxide init zsh)"
 
 # Load aki completion
 source "/Users/akiho/.zsh/aki-completion.zsh"
+
+# mise
+# https://github.com/jdx/mise
+eval "$(~/.local/bin/mise activate zsh)"
+
+# bun completions
+[ -s "/Users/akiho/.bun/_bun" ] && source "/Users/akiho/.bun/_bun"
+
+# cursor
+# alias cursor="cursor"
+alias cursor='open -a Cursor "$1"'
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/akiho/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/akiho/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/akiho/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/akiho/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+

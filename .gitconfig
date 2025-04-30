@@ -20,8 +20,6 @@
 	insteadOf = git://github.com/
 [merge]
 	conflictStyle = diff3
-[pull]
-	rebase = true
 [ghq]
 	root = /Users/akiho/github
 [alias]
@@ -50,8 +48,14 @@
   rho = !git cbn | sed 's/\\.*/origin\\/&/' | xargs git rh
 	cbn = branch --show-current # rev-parse --abbrev-ref HEAD
 	rh = reset --hard
-  # delete merged branch
-  dmb = !git branch --merged | egrep -v '\\*|master|main|dev' | xargs git branch -d
+  # delete merged branch: リモート追跡が消えた（gone）ブランチのみが削除対象
+  dmb = !git fetch --prune && \
+        git branch -vv | grep ': gone]' | awk '{print $1}' | \
+        grep -v -E '^(master|main|dev)$' | xargs -r git branch -D
 	# remote dev を最新にしてマージ済みブランチ削除
 	# up = !git ftp && git rho && git dmb
 	up = !git ftp && git dmb
+	# dev branch と特定のファイルの差分を比較
+	dd = !git diff origin/dev --
+	# dev ブランチの内容を現在のブランチに反映
+	cd = !git checkout origin/dev --
