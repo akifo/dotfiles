@@ -52,9 +52,8 @@
   dmb = !git fetch --prune && \
         git branch -vv | grep ': gone]' | awk '{print $1}' | \
         grep -v -E '^(master|main|dev)$' | xargs -r git branch -D
-	# remote dev を最新にしてマージ済みブランチ削除
-	# up = !git ftp && git rho && git dmb
-	up = !git ftp && git dmb
+	# remote dev を最新にしてマージ済みブランチ削除（安全版：未コミット変更をチェック）
+	up = !git status --porcelain | grep -q . && echo \"Warning: You have uncommitted changes. Stash or commit them first.\" && exit 1 || (git ftp && g rho && git dmb)
 	# dev branch と特定のファイルの差分を比較
 	dd = !git diff origin/dev --
 	# dev ブランチの内容を現在のブランチに反映
