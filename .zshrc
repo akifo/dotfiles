@@ -68,6 +68,13 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# Functions
+goto() {
+  local dir
+  dir=$(find . -type d -iname "*$1*" | fzf)
+  [[ -n "$dir" ]] && cd "$dir"
+}
+
 # zoxide
 eval "$(zoxide init zsh)"
 
