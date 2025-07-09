@@ -25,6 +25,8 @@
 [alias]
   l = log --date=format:'%Y-%m-%d %H:%M' --pretty=format:'%C(yellow)%h %Cgreen%cd %Cblue%cn %Creset%s'
 	fp = !git fetch && git pull --rebase
+	# git force push with lease
+	pushff = push --force-with-lease --force-if-includes
 	# リモートリポジトリ上で削除されたブランチをローカルの追跡ブランチからも削除
 	ftp = fetch --prune
 	swc = switch -c
