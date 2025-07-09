@@ -69,9 +69,13 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Functions
+
 goto() {
   local dir
-  dir=$(find . -type d -iname "*$1*" | fzf)
+  # Search for directories matching the input, excluding node_modules
+  # -path "*/node_modules" -prune: skip node_modules directories
+  # -o ... -print: print matching directories outside of node_modules
+  dir=$(find . -path "*/node_modules" -prune -o -type d -iname "*$1*" -print | fzf)
   [[ -n "$dir" ]] && cd "$dir"
 }
 
