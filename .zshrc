@@ -46,6 +46,8 @@ export PATH="/usr/local/opt/mysql-client/bin:$PATH"
 # alias
 alias dc='docker-compose'
 alias g='git'
+alias claude="/Users/akiho/.claude/local/claude"
+alias c="/Users/akiho/.claude/local/claude"
 
 # fastly
 eval "$(fastly --completion-script-zsh)"
@@ -77,6 +79,83 @@ goto() {
   # -o ... -print: print matching directories outside of node_modules
   dir=$(find . -path "*/node_modules" -prune -o -type d -iname "*$1*" -print | fzf)
   [[ -n "$dir" ]] && cd "$dir"
+}
+
+# port を kill するコマンド
+# lsof -i :port番号
+# kill pid
+# ~/.zshrc に貼って reload
+# ~/.zshrc に貼って reload
+killport() {
+  emulate -L zsh
+  set -o pipefail
+
+  # lsof を機械可読 (-F) で取得
+  # p=PID, c=CMD, n=NAME, P=PROTO
+  local lines
+  lines=$(
+    lsof -nP -iTCP -sTCP:LISTEN -F pcPn 2>/dev/null | \
+    awk '
+      function print_line() {
+        if (pid && cmd && name) {
+          port = name
+          sub(/.*:/, "", port)          # ":" の後ろを残す
+          sub(/ .*/, "", port)          # 空白以降（"(LISTEN)" 等）を削除
+          if (port !~ /^[0-9]+$/) port = "?"
+          printf "port=%-6s  pid=%-7s  cmd=%-20s  %s\n", port, pid, cmd, name
+        }
+      }
+      /^p/ { pid=substr($0,2); next }
+      /^c/ { cmd=substr($0,2); next }
+      /^n/ { name=substr($0,2); print_line(); name="" ; next }
+    '
+  ) || return
+
+  if [[ -z "$lines" ]]; then
+    echo "LISTEN 中の TCP ポートは見つかりませんでした。"
+    return 1
+  fi
+
+  # fzf で選択（複数可）
+  local selection
+  selection=$(printf "%s\n" "$lines" | \
+    fzf --prompt='killport> ' \
+        --header='[Enter]=実行  [Tab]=複数選択  [Esc]=キャンセル' \
+        --multi) || return 1
+
+  [[ -z "$selection" ]] && { echo "キャンセルしました。"; return 1; }
+
+  # PID 抽出
+  local pids=()
+  while IFS= read -r line; do
+    local pid
+    pid=${${line#*pid=}%% *}
+    [[ -n "$pid" ]] && pids+=("$pid")
+  done <<< "$selection"
+
+  (( ${#pids[@]} )) || { echo "PID を抽出できませんでした。"; return 1; }
+
+  echo "終了対象 PID: ${pids[@]}"
+  read -q "REPLY?まず正常終了(SIGTERM)します。続けますか？ [y/N] " || { echo; echo "中止しました。"; return 1; }
+  echo
+  kill "${pids[@]}"
+
+  sleep 1
+
+  # 残っていれば SIGKILL
+  local remain=()
+  for pid in "${pids[@]}"; do
+    if kill -0 "$pid" 2>/dev/null; then
+      remain+=("$pid")
+    fi
+  done
+
+  if (( ${#remain[@]} )); then
+    echo "まだ生きている PID: ${remain[@]}"
+    read -q "REPLY?強制終了(SIGKILL)しますか？ [y/N] " || { echo; return 0; }
+    echo
+    kill -9 "${remain[@]}"
+  fi
 }
 
 # zoxide
@@ -117,4 +196,5 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 # pnpm
 export PATH="$HOME/.local/share/pnpm:$PATH"
-alias claude="/Users/akiho/.claude/local/claude"
+
+
