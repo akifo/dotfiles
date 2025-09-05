@@ -55,7 +55,7 @@
         git branch -vv | grep ': gone]' | awk '{print $1}' | \
         grep -v -E '^(master|main|dev)$' | xargs -r git branch -D
 	# remote dev を最新にしてマージ済みブランチ削除（安全版：未コミット変更をチェック）
-	up = !git status --porcelain | grep -q . && echo \"Warning: You have uncommitted changes. Stash or commit them first.\" && exit 1 || (git ftp && g rho && git dmb)
+	up = !git status --porcelain | grep -q . && echo \"Warning: You have uncommitted changes. Stash or commit them first.\" && exit 1 || (git ftp && git rho && git dmb)
 	# dev branch と特定のファイルの差分を比較
 	dd = !git diff origin/dev --
 	# dev ブランチの内容を現在のブランチに反映
@@ -66,6 +66,6 @@
 # =============================================================================
   wl = worktree list
 	# worktree作成 or worktreeを開く
-  wo = !repo=$(basename $(pwd)) && branch=$(git bl | fzf --header '[create worktree and open in code]' | awk '{print $2}') && [ -n \"$branch\" ] && worktree_dir=\"../$repo.w/$branch\" && (git worktree add \"$worktree_dir\" \"$branch\" 2>/dev/null || true) && [ -d \"$worktree_dir\" ] && code \"$worktree_dir\" || echo \"Failed to create or find worktree directory\"
+  wo = !repo=$(basename $(pwd)) && branch=$(git bl | fzf --header '[create worktree and open in Cursor]' | awk '{print $2}') && [ -n \"$branch\" ] && worktree_dir=\"../$repo.w/$branch\" && (git worktree add \"$worktree_dir\" \"$branch\" 2>/dev/null || true) && [ -d \"$worktree_dir\" ] && open -a Cursor \"$worktree_dir\" || echo \"Failed to create or find worktree directory\"
 	# worktree削除
   wr = !git worktree list | grep -v '(bare)' | sed '1d' | fzf -m --header '[remove worktree (multi-select with Tab)]' | awk '{print $1}' | xargs -r -I {} git worktree remove {}
