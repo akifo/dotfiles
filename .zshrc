@@ -198,3 +198,14 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 export PATH="$HOME/.local/share/pnpm:$PATH"
 
 
+
+# pnpm
+export PNPM_HOME="/Users/akiho/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+# Docker
+export PATH="/Applications/Docker.app/Contents/Resources/bin:$PATH"
