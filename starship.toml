@@ -4,9 +4,17 @@
 # Inserts a blank line between shell prompts
 add_newline = true
 
+# Minimal left prompt with default-style input symbol on a new line
+format = "$directory $git_branch$line_break$character"
+
+# Right prompt: command duration (if slow) and current time
+right_format = "$cmd_duration $time"
+
 # Replace the "❯" symbol in the prompt with "➜"
 [character] # The name of the module we are configuring is "character"
-success_symbol = "[➜](bold green)" # The "success_symbol" segment is being set to "➜" with the color "bold green"
+success_symbol = "[❯](bold green)"
+error_symbol = "[✖](bold red)"
+vicmd_symbol = "[❮](bold green)"
 
 # Disable the package module, hiding it from the prompt completely
 [package]
@@ -14,9 +22,33 @@ disabled = true
 
 # memory
 [memory_usage]
-disabled = false
+disabled = true
 threshold = -1
 style = "bold dimmed blue"
+
+[cmd_duration]
+# Show when command takes >= 2s (default). Customize look and text.
+min_time = 2000
+format = "took [$duration]($style) "
+style = "bold yellow"
+show_milliseconds = false
+
+[time]
+disabled = false
+time_format = "%H:%M"
+style = "bold dimmed white"
+format = "[$time]($style)"
+
+[directory]
+truncate_to_repo = true
+truncation_length = 1
+format = "[$path]($style)"
+style = "bold blue"
+
+[git_branch]
+symbol = " "
+format = "on [$symbol$branch]($style)"
+style = "bold green"
 
 # Nerd Font Symbols Preset
 # [aws]
