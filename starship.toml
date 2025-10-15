@@ -41,7 +41,7 @@ format = "[$time]($style)"
 
 [directory]
 truncate_to_repo = true
-truncation_length = 1
+truncation_length = 2
 format = "[$path]($style)"
 style = "bold blue"
 
